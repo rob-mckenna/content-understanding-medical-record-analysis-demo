@@ -1,0 +1,30 @@
+{
+  "analyzerId": "healthcare-orders-admit-transfer-v1",
+  "description": "Admit/Transfer/Discharge orders.",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "OrdersAdmitTransfer",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "orders": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "orderType":         { "type": "string", "method": "classify", "enum": ["admit","transfer","discharge","observation","other"] },
+            "orderStartDateTime":{ "type": "date",   "method": "extract" },
+            "orderDateTime":     { "type": "date",   "method": "extract" },
+            "orderStatus":       { "type": "string", "method": "extract" },
+            "orderingPhysician": { "type": "string", "method": "extract" },
+            "consultingPhysician":{"type": "string", "method": "extract" },
+            "orderDetails":      { "type": "string", "method": "extract" },
+            "endStateDateTime":  { "type": "date",   "method": "extract" },
+            "endStateReason":    { "type": "string", "method": "extract" }
+          }
+        }
+      }
+    }
+  }
+}

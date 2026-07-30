@@ -1,0 +1,17 @@
+[project]
+name = "cu-medical-record-analysis-demo"
+version = "0.1.0"
+description = "Reference architecture: Azure Content Understanding for large medical records with FHIR output."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Microsoft" }]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+testpaths = ["tests"]
+markers = ["integration: requires live Azure resources"]

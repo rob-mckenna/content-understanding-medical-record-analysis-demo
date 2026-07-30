@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "method": "extract",
+  "description": "Shared encounter block referenced by every specialist analyzer.",
+  "properties": {
+    "admitDateTime":      { "type": "date",   "method": "extract" },
+    "dischargeDateTime":  { "type": "date",   "method": "extract" },
+    "patientLocation":    { "type": "string", "method": "extract" },
+    "attendingPhysician": { "type": "string", "method": "extract" },
+    "pcp":                { "type": "string", "method": "extract" },
+    "facilityName":       { "type": "string", "method": "extract" },
+    "facilityAddress":    { "type": "string", "method": "extract" },
+    "facilityPhone":      { "type": "string", "method": "extract" }
+  }
+}

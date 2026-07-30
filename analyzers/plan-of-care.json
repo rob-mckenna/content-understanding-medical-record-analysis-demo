@@ -1,0 +1,38 @@
+{
+  "analyzerId": "healthcare-plan-of-care-v1",
+  "description": "Plan of Care with medical, nursing, discharge and education goals + interventions + outcomes.",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "PlanOfCare",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "planItems": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "category":            { "type": "string", "method": "classify", "enum": ["medical","nursing","discharge","education","respiratory","cardiac","imaging","laboratory","follow-up","other"] },
+            "status":              { "type": "string", "method": "classify", "enum": ["planned","in-progress","completed","cancelled","on-hold"] },
+            "goal":                { "type": "string", "method": "extract" },
+            "intervention":        { "type": "string", "method": "extract" },
+            "responsibleProvider": { "type": "string", "method": "extract" },
+            "targetDate":          { "type": "date",   "method": "extract" },
+            "signedDateTime":      { "type": "date",   "method": "extract" }
+          }
+        }
+      },
+      "outcomes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "description": { "type": "string", "method": "extract" },
+            "status":      { "type": "string", "method": "classify", "enum": ["met","not-met","partial","pending"] }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "analyzerId": "healthcare-orders-medication-v1",
+  "description": "Medication orders (inpatient and discharge).",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "OrdersMedication",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "orders": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "medicationName":    { "type": "string", "method": "extract" },
+            "brandName":         { "type": "string", "method": "extract" },
+            "rxNormCode":        { "type": "string", "method": "extract" },
+            "dose":              { "type": "string", "method": "extract" },
+            "doseUnit":          { "type": "string", "method": "extract" },
+            "route":             { "type": "string", "method": "classify", "enum": ["PO","IV","IM","SubQ","Topical","Inhaled","PR","Other"] },
+            "frequency":         { "type": "string", "method": "extract" },
+            "indication":        { "type": "string", "method": "generate" },
+            "prn":               { "type": "boolean","method": "classify" },
+            "orderStartDateTime":{ "type": "date",   "method": "extract" },
+            "orderEndDateTime":  { "type": "date",   "method": "extract" },
+            "orderStatus":       { "type": "string", "method": "classify", "enum": ["active","held","discontinued","completed","pending"] },
+            "orderingPhysician": { "type": "string", "method": "extract" },
+            "specialInstructions":{"type": "string", "method": "extract" }
+          }
+        }
+      }
+    }
+  }
+}

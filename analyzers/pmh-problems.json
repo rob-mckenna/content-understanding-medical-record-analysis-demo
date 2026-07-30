@@ -1,0 +1,32 @@
+{
+  "analyzerId": "healthcare-pmh-problems-v1",
+  "description": "Past medical history and problems list.",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "PmhProblems",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "problems": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "problemName":         { "type": "string", "method": "extract" },
+            "icd10Code":           { "type": "string", "method": "extract" },
+            "snomedCode":          { "type": "string", "method": "extract" },
+            "lifeCycleStatus":     { "type": "string", "method": "classify", "enum": ["active","resolved","chronic","recurrent","history","unknown"] },
+            "onsetDate":           { "type": "date",   "method": "extract" },
+            "resolvedDate":        { "type": "date",   "method": "extract" },
+            "ageAtOnset":          { "type": "string", "method": "extract" },
+            "classification":      { "type": "string", "method": "extract" },
+            "confirmation":        { "type": "string", "method": "extract" },
+            "responsibleProvider": { "type": "string", "method": "extract" },
+            "comments":            { "type": "string", "method": "extract" }
+          }
+        }
+      }
+    }
+  }
+}

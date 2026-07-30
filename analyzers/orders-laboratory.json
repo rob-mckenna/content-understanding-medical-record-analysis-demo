@@ -1,0 +1,30 @@
+{
+  "analyzerId": "healthcare-orders-laboratory-v1",
+  "description": "Laboratory orders.",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "OrdersLaboratory",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "orders": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "orderName":         { "type": "string", "method": "extract" },
+            "loincCode":         { "type": "string", "method": "extract" },
+            "orderStartDateTime":{ "type": "date",   "method": "extract" },
+            "orderDateTime":     { "type": "date",   "method": "extract" },
+            "orderStatus":       { "type": "string", "method": "extract" },
+            "priority":          { "type": "string", "method": "classify", "enum": ["routine","urgent","stat","asap","timing-critical"] },
+            "specimenType":      { "type": "string", "method": "extract" },
+            "orderingPhysician": { "type": "string", "method": "extract" },
+            "endStateDateTime":  { "type": "date",   "method": "extract" }
+          }
+        }
+      }
+    }
+  }
+}

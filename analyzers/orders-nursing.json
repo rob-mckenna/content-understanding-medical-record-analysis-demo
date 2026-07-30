@@ -1,0 +1,29 @@
+{
+  "analyzerId": "healthcare-orders-nursing-v1",
+  "description": "Nursing orders (monitoring, replacement protocols, care activities).",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "OrdersNursing",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "orders": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "orderName":         { "type": "string", "method": "extract" },
+            "orderCategory":     { "type": "string", "method": "classify", "enum": ["monitoring","replacement","assessment","care-activity","precautions","other"] },
+            "orderStartDateTime":{ "type": "date",   "method": "extract" },
+            "orderDateTime":     { "type": "date",   "method": "extract" },
+            "orderStatus":       { "type": "string", "method": "extract" },
+            "frequency":         { "type": "string", "method": "extract" },
+            "orderingPhysician": { "type": "string", "method": "extract" },
+            "orderDetails":      { "type": "string", "method": "extract" }
+          }
+        }
+      }
+    }
+  }
+}

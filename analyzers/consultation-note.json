@@ -1,0 +1,41 @@
+{
+  "analyzerId": "healthcare-consultation-note-v1",
+  "description": "Specialist consultation note.",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "ConsultationNote",
+    "fields": {
+      "patient": { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "referringPhysician":    { "type": "string", "method": "extract" },
+      "consultingPhysician":   { "type": "string", "method": "extract" },
+      "reasonForConsultation": { "type": "string", "method": "generate" },
+      "chiefComplaint":        { "type": "string", "method": "extract" },
+      "historyOfPresentIllness": { "type": "string", "method": "generate" },
+      "problemList": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "problemName": { "type": "string", "method": "extract" },
+            "status":      { "type": "string", "method": "classify", "enum": ["active","resolved","chronic","unknown"] }
+          }
+        }
+      },
+      "assessment": { "type": "string", "method": "generate" },
+      "recommendations": { "type": "string", "method": "generate" },
+      "signedBy": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "providerName": { "type": "string", "method": "extract" },
+            "signedAt":     { "type": "date",   "method": "extract" },
+            "role":         { "type": "string", "method": "extract" }
+          }
+        }
+      }
+    }
+  }
+}

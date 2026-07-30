@@ -1,0 +1,31 @@
+{
+  "analyzerId": "healthcare-lab-results-v1",
+  "description": "Laboratory panels — CBC, chemistry, POC, microbiology, coagulation, LFT.",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "LabResults",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "labs": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "panelName":          { "type": "string", "method": "classify", "enum": ["CBC","BMP","CMP","POC-Glucose","Coag","LFT","Micro","Serology","UA","ABG","Other"] },
+            "testName":           { "type": "string", "method": "extract" },
+            "resultValue":        { "type": "string", "method": "extract" },
+            "resultUnit":         { "type": "string", "method": "extract" },
+            "referenceRange":     { "type": "string", "method": "extract" },
+            "abnormalFlag":       { "type": "string", "method": "classify", "enum": ["normal","high","low","critical-high","critical-low","abnormal"] },
+            "specimenType":       { "type": "string", "method": "extract" },
+            "collectionDateTime": { "type": "date",   "method": "extract" },
+            "resultDateTime":     { "type": "date",   "method": "extract" },
+            "orderingProvider":   { "type": "string", "method": "extract" }
+          }
+        }
+      }
+    }
+  }
+}

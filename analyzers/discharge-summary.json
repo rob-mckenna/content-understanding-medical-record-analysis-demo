@@ -1,0 +1,164 @@
+{
+  "analyzerId": "healthcare-discharge-summary-v1",
+  "description": "Extracts structured clinical data from hospital discharge summaries.",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": {
+    "returnDetails": true,
+    "enableOcr": true,
+    "enableLayout": true,
+    "enableBarcode": false,
+    "enableFormula": false,
+    "enableGrounding": true,
+    "locales": ["en-US"],
+    "estimateFieldSourceAndConfidence": true
+  },
+  "fieldSchema": {
+    "name": "DischargeSummary",
+    "descriptions": "Hospital discharge summary with demographics, diagnoses, medications, labs, plan of care, and disposition.",
+    "fields": {
+      "patient": {
+        "type": "object",
+        "method": "extract",
+        "properties": {
+          "patientName":     { "type": "string", "method": "extract" },
+          "mrn": {
+            "type": "array",
+            "method": "extract",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value":    { "type": "string", "method": "extract" },
+                "facility": { "type": "string", "method": "extract" }
+              }
+            }
+          },
+          "dateOfBirth":    { "type": "date",   "method": "extract" },
+          "age":            { "type": "string", "method": "extract" },
+          "sex":            { "type": "string", "method": "classify", "enum": ["M","F","U","Other"] },
+          "accountNumber":  { "type": "string", "method": "extract" },
+          "fin":            { "type": "string", "method": "extract" },
+          "activeInsurance":{ "type": "string", "method": "extract" }
+        }
+      },
+      "encounter": {
+        "type": "object",
+        "properties": {
+          "admitDateTime":      { "type": "date",   "method": "extract" },
+          "dischargeDateTime":  { "type": "date",   "method": "extract" },
+          "patientLocation":    { "type": "string", "method": "extract" },
+          "attendingPhysician": { "type": "string", "method": "extract" },
+          "pcp":                { "type": "string", "method": "extract" },
+          "facilityName":       { "type": "string", "method": "extract" },
+          "facilityAddress":    { "type": "string", "method": "extract" },
+          "facilityPhone":      { "type": "string", "method": "extract" }
+        }
+      },
+      "admissionReason":  { "type": "string", "method": "generate", "description": "One-sentence reason for admission derived from HPI/hospital course." },
+      "hospitalCourse":   { "type": "string", "method": "generate", "description": "3-6 sentence clinical summary of the inpatient stay." },
+      "dischargeDiagnoses": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "diagnosisText": { "type": "string", "method": "extract" },
+            "icd10Code":     { "type": "string", "method": "extract" },
+            "type":          { "type": "string", "method": "classify", "enum": ["principal","secondary","admission","working","problem-list"] },
+            "onsetDate":     { "type": "date",   "method": "extract" },
+            "status":        { "type": "string", "method": "classify", "enum": ["active","resolved","chronic","recurrent","unknown"] }
+          }
+        }
+      },
+      "dischargeMedications": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "medicationName": { "type": "string", "method": "extract" },
+            "brandName":      { "type": "string", "method": "extract" },
+            "dose":           { "type": "string", "method": "extract" },
+            "doseUnit":       { "type": "string", "method": "extract" },
+            "route":          { "type": "string", "method": "classify", "enum": ["PO","IV","IM","SubQ","Topical","Inhaled","PR","Other"] },
+            "frequency":      { "type": "string", "method": "extract" },
+            "status":         { "type": "string", "method": "classify", "enum": ["continue","new","discontinued","held","changed"] },
+            "indication":     { "type": "string", "method": "generate" }
+          }
+        }
+      },
+      "vitalsAtDischarge": {
+        "type": "object",
+        "properties": {
+          "temperatureC":    { "type": "number", "method": "extract" },
+          "heartRate":       { "type": "number", "method": "extract" },
+          "respiratoryRate": { "type": "number", "method": "extract" },
+          "systolicBP":      { "type": "number", "method": "extract" },
+          "diastolicBP":     { "type": "number", "method": "extract" },
+          "spo2Percent":     { "type": "number", "method": "extract" },
+          "oxygenMethod":    { "type": "string", "method": "extract" }
+        }
+      },
+      "labs": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "panelName":          { "type": "string", "method": "classify", "enum": ["CBC","BMP","CMP","POC-Glucose","Coag","LFT","Micro","Other"] },
+            "testName":           { "type": "string", "method": "extract" },
+            "resultValue":        { "type": "string", "method": "extract" },
+            "resultUnit":         { "type": "string", "method": "extract" },
+            "referenceRange":     { "type": "string", "method": "extract" },
+            "abnormalFlag":       { "type": "string", "method": "classify", "enum": ["normal","high","low","critical-high","critical-low","abnormal"] },
+            "collectionDateTime": { "type": "date",   "method": "extract" }
+          }
+        }
+      },
+      "carePlan": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "category":            { "type": "string", "method": "classify", "enum": ["medical","nursing","discharge","education","follow-up"] },
+            "goal":                { "type": "string", "method": "extract" },
+            "intervention":        { "type": "string", "method": "extract" },
+            "responsibleProvider": { "type": "string", "method": "extract" },
+            "targetDate":          { "type": "date",   "method": "extract" }
+          }
+        }
+      },
+      "dischargeDisposition": {
+        "type": "string", "method": "classify",
+        "enum": ["home","home-with-services","SNF","rehab","LTAC","hospice","AMA","expired","other"]
+      },
+      "followUp": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "provider":     { "type": "string", "method": "extract" },
+            "specialty":    { "type": "string", "method": "extract" },
+            "timeframe":    { "type": "string", "method": "extract" },
+            "instructions": { "type": "string", "method": "generate" }
+          }
+        }
+      },
+      "signedBy": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "providerName": { "type": "string", "method": "extract" },
+            "signedAt":     { "type": "date",   "method": "extract" },
+            "role":         { "type": "string", "method": "extract" }
+          }
+        }
+      },
+      "documentQuality": {
+        "type": "object",
+        "properties": {
+          "hasIllegibleDates":   { "type": "boolean", "method": "classify" },
+          "requiresHumanReview": { "type": "boolean", "method": "classify" },
+          "reviewReason":        { "type": "string",  "method": "generate" }
+        }
+      }
+    }
+  }
+}

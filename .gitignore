@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Env & secrets
+.env
+.env.*
+*.pem
+*.key
+local.settings.json
+
+# Azure Functions
+bin/
+obj/
+.python_packages/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Bicep build artifacts
+*.bicepparam.json
+
+# PHI safety - never accidentally commit medical records
+samples/*.pdf
+samples/**/*.pdf
+samples/**/*.dcm
+samples/**/*.hl7
+!samples/README.md
+!samples/expected/**

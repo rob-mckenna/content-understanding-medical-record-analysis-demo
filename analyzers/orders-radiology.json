@@ -1,0 +1,33 @@
+{
+  "analyzerId": "healthcare-orders-radiology-v1",
+  "description": "Radiology / imaging orders (CT, MRI, XR, US, NM, PET).",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "OrdersRadiology",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "orders": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "studyName":         { "type": "string", "method": "extract" },
+            "modality":          { "type": "string", "method": "classify", "enum": ["CT","MRI","XR","US","NM","PET","MG","Fluoro","Other"] },
+            "bodySite":          { "type": "string", "method": "extract" },
+            "contrastUsed":      { "type": "boolean","method": "classify" },
+            "contrastAgent":     { "type": "string", "method": "extract" },
+            "priority":          { "type": "string", "method": "classify", "enum": ["routine","urgent","stat","asap"] },
+            "orderStartDateTime":{ "type": "date",   "method": "extract" },
+            "orderDateTime":     { "type": "date",   "method": "extract" },
+            "orderStatus":       { "type": "string", "method": "extract" },
+            "orderingPhysician": { "type": "string", "method": "extract" },
+            "indication":        { "type": "string", "method": "extract" },
+            "cptCode":           { "type": "string", "method": "extract" }
+          }
+        }
+      }
+    }
+  }
+}

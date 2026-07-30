@@ -1,0 +1,36 @@
+{
+  "analyzerId": "healthcare-cardiology-ecg-v1",
+  "description": "ECG / cardiology report with numeric parameters and interpretive statements.",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "CardiologyEcg",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "testDateTime":      { "type": "date",   "method": "extract" },
+      "orderingProvider":  { "type": "string", "method": "extract" },
+      "readingProvider":   { "type": "string", "method": "extract" },
+      "technician":        { "type": "string", "method": "extract" },
+      "ecgParameters": {
+        "type": "object",
+        "properties": {
+          "heartRateBpm":  { "type": "number", "method": "extract" },
+          "prIntervalMs":  { "type": "number", "method": "extract" },
+          "qrsDurationMs": { "type": "number", "method": "extract" },
+          "qtMs":          { "type": "number", "method": "extract" },
+          "qtcMs":         { "type": "number", "method": "extract" },
+          "pAxis":         { "type": "number", "method": "extract" },
+          "qrsAxis":       { "type": "number", "method": "extract" },
+          "tAxis":         { "type": "number", "method": "extract" }
+        }
+      },
+      "interpretiveStatements": {
+        "type": "array",
+        "items": { "type": "string", "method": "extract" }
+      },
+      "severity":  { "type": "string", "method": "classify", "enum": ["normal","borderline","abnormal","critical"] },
+      "impression":{ "type": "string", "method": "generate" }
+    }
+  }
+}

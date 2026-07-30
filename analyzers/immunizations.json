@@ -1,0 +1,33 @@
+{
+  "analyzerId": "healthcare-immunizations-v1",
+  "description": "Immunization records.",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "Immunizations",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "immunizations": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "vaccineName":     { "type": "string", "method": "extract" },
+            "cvxCode":         { "type": "string", "method": "extract" },
+            "dateGiven":       { "type": "date",   "method": "extract" },
+            "ageAtGiven":      { "type": "string", "method": "extract" },
+            "adminPerson":     { "type": "string", "method": "extract" },
+            "site":            { "type": "string", "method": "extract" },
+            "route":           { "type": "string", "method": "classify", "enum": ["IM","SubQ","PO","IN","ID","Other"] },
+            "amount":          { "type": "string", "method": "extract" },
+            "manufacturer":    { "type": "string", "method": "extract" },
+            "lotNumber":       { "type": "string", "method": "extract" },
+            "expirationDate":  { "type": "date",   "method": "extract" },
+            "dataSource":      { "type": "string", "method": "extract" }
+          }
+        }
+      }
+    }
+  }
+}

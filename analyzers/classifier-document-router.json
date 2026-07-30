@@ -1,0 +1,35 @@
+{
+  "classifierId": "medical-record-document-router-v1",
+  "description": "Routes each page (or contiguous page-run) of a medical record to the correct specialist analyzer. Multimodal — uses layout + text signatures.",
+  "baseClassifierId": "prebuilt-documentClassifier",
+  "config": {
+    "enableOcr": true,
+    "enableLayout": true,
+    "returnDetails": true
+  },
+  "categories": [
+    { "label": "discharge-summary",   "description": "Hospital discharge summary. Signals: 'Discharge Summary' header, admit/discharge dates, hospital course, discharge medications." },
+    { "label": "consultation-note",   "description": "Specialist consultation. Signals: 'Consultation' header, referring physician, reason for consultation, HPI, assessment/plan." },
+    { "label": "progress-note",       "description": "Daily progress or SOAP note. Signals: Subjective/Objective/Assessment/Plan headers, daily vitals, hospital-day counter." },
+    { "label": "cardiology-ecg",      "description": "ECG or cardiology report. Signals: Rate, PR, QRS, QT, QTc, Axis, interpretive statements." },
+    { "label": "lab-results",         "description": "Laboratory results — CBC, chemistry, POC, microbiology. Signals: analyte name + value + reference range triples." },
+    { "label": "immunizations",       "description": "Immunization record. Signals: 'Vaccine:' / 'Date Given:' / 'Lot Number:' key-value blocks." },
+    { "label": "intake-output",       "description": "Intake & output flowsheet. Signals: 'Total Intake / Total Output / Fluid Balance', columnar totals." },
+    { "label": "medication-admin-record", "description": "MAR. Signals: 'Admin Date/Time', 'Medication Name', 'Ingredients', 'Admin Details' key-value groups." },
+    { "label": "pmh-problems",        "description": "Past medical history / problems list. Signals: 'Problem Name', 'Life Cycle Status', 'Onset Date'." },
+    { "label": "orders-admit-transfer", "description": "Admit/Transfer/Discharge order. Signals: 'Order: Discharge' or 'Order: Admit', 'Order Status'." },
+    { "label": "orders-laboratory",   "description": "Laboratory order. Signals: 'Order:' with lab test name, 'General Laboratory' section." },
+    { "label": "orders-nursing",      "description": "Nursing order. Signals: 'Nursing' section, monitoring/replacement orders." },
+    { "label": "orders-medication",   "description": "Medication order. Signals: 'Medications' section, dose/route/frequency in order details." },
+    { "label": "orders-radiology",    "description": "Imaging order. Signals: 'Radiology' section, modality (CT/MRI/XR/US), contrast." },
+    { "label": "plan-of-care",        "description": "Plan of care / care plan. Signals: 'Plan of Care' header, goals/interventions/outcomes." },
+    { "label": "cover-separator",     "description": "Facility cover page, separator, or blank page. Ignore for extraction." },
+    { "label": "unknown-other",       "description": "Confidence below any specialist. Route to human review." }
+  ],
+  "trainingHints": {
+    "windowSize": 3,
+    "windowOverlap": 1,
+    "mergeContiguousSameLabel": true,
+    "patientBannerBoundaryResetsRun": true
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "analyzerId": "healthcare-progress-note-v1",
+  "description": "Daily progress / SOAP note.",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "ProgressNote",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "noteDateTime": { "type": "date", "method": "extract" },
+      "author":       { "type": "string", "method": "extract" },
+      "subjective":   { "type": "string", "method": "generate" },
+      "objective":    { "type": "string", "method": "generate" },
+      "assessment":   { "type": "string", "method": "generate" },
+      "plan":         { "type": "string", "method": "generate" },
+      "vitals": {
+        "type": "object",
+        "properties": {
+          "temperatureC":    { "type": "number", "method": "extract" },
+          "heartRate":       { "type": "number", "method": "extract" },
+          "respiratoryRate": { "type": "number", "method": "extract" },
+          "systolicBP":      { "type": "number", "method": "extract" },
+          "diastolicBP":     { "type": "number", "method": "extract" },
+          "spo2Percent":     { "type": "number", "method": "extract" },
+          "oxygenMethod":    { "type": "string", "method": "extract" }
+        }
+      },
+      "physicalExam": {
+        "type": "object",
+        "properties": {
+          "general":       { "type": "string", "method": "extract" },
+          "cardiovascular":{ "type": "string", "method": "extract" },
+          "respiratory":   { "type": "string", "method": "extract" },
+          "abdomen":       { "type": "string", "method": "extract" },
+          "neurologic":    { "type": "string", "method": "extract" },
+          "skin":          { "type": "string", "method": "extract" }
+        }
+      }
+    }
+  }
+}

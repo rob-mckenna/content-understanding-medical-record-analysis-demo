@@ -1,0 +1,34 @@
+{
+  "analyzerId": "healthcare-medication-admin-record-v1",
+  "description": "Medication Administration Record (MAR).",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "MedicationAdminRecord",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "administrations": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "adminDateTime":     { "type": "date",   "method": "extract" },
+            "medicationName":    { "type": "string", "method": "extract" },
+            "brandName":         { "type": "string", "method": "extract" },
+            "genericName":       { "type": "string", "method": "extract" },
+            "ingredients":       { "type": "string", "method": "extract" },
+            "dose":              { "type": "string", "method": "extract" },
+            "doseUnit":          { "type": "string", "method": "extract" },
+            "route":             { "type": "string", "method": "classify", "enum": ["PO","IV","IM","SubQ","Topical","Inhaled","PR","Other"] },
+            "site":              { "type": "string", "method": "extract" },
+            "adminBy":           { "type": "string", "method": "extract" },
+            "orderingPhysician": { "type": "string", "method": "extract" },
+            "chartedDateTime":   { "type": "date",   "method": "extract" },
+            "status":            { "type": "string", "method": "classify", "enum": ["given","held","refused","not-administered","documented"] }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "method": "extract",
+  "description": "Shared patient banner block referenced by every specialist analyzer.",
+  "properties": {
+    "patientName": { "type": "string", "method": "extract" },
+    "mrn": {
+      "type": "array",
+      "method": "extract",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value":    { "type": "string", "method": "extract" },
+          "facility": { "type": "string", "method": "extract" }
+        }
+      }
+    },
+    "dateOfBirth":     { "type": "date",   "method": "extract" },
+    "age":             { "type": "string", "method": "extract" },
+    "sex":             { "type": "string", "method": "classify", "enum": ["M","F","U","Other"] },
+    "accountNumber":   { "type": "string", "method": "extract" },
+    "fin":             { "type": "string", "method": "extract" },
+    "activeInsurance": { "type": "string", "method": "extract" }
+  }
+}

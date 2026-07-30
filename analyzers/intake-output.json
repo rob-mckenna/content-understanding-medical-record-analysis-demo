@@ -1,0 +1,46 @@
+{
+  "analyzerId": "healthcare-intake-output-v1",
+  "description": "Intake & output flowsheet with totals and fluid balance.",
+  "baseAnalyzerId": "prebuilt-documentAnalyzer",
+  "config": { "returnDetails": true, "enableOcr": true, "enableLayout": true, "enableGrounding": true, "locales": ["en-US"], "estimateFieldSourceAndConfidence": true },
+  "fieldSchema": {
+    "name": "IntakeOutput",
+    "fields": {
+      "patient":   { "$ref": "shared/patient-banner.json" },
+      "encounter": { "$ref": "shared/encounter.json" },
+      "periods": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "periodStart": { "type": "date", "method": "extract" },
+            "periodEnd":   { "type": "date", "method": "extract" },
+            "intakeItems": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label":  { "type": "string", "method": "extract" },
+                  "volumeMl": { "type": "number", "method": "extract" }
+                }
+              }
+            },
+            "outputItems": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label":  { "type": "string", "method": "extract" },
+                  "volumeMl": { "type": "number", "method": "extract" }
+                }
+              }
+            },
+            "totalIntakeMl":  { "type": "number", "method": "extract" },
+            "totalOutputMl":  { "type": "number", "method": "extract" },
+            "fluidBalanceMl": { "type": "number", "method": "extract" }
+          }
+        }
+      }
+    }
+  }
+}
