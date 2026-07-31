@@ -19,7 +19,7 @@ var kvName      = 'kv-mra-${envName}-${substring(suffix, 0, 4)}'
 var laName      = 'log-mra-${envName}'
 var aiName      = 'ai-mra-${envName}'
 var cosmosName  = 'cos-mra-${envName}-${substring(suffix, 0, 4)}'
-var ahdsWs      = 'ahds-mra-${envName}'
+var ahdsWs      = 'ahdsmra${envName}'
 var fhirName    = 'fhir1'
 
 resource la 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
@@ -100,7 +100,8 @@ resource acu 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
 resource plan 'Microsoft.Web/serverfarms@2024-04-01' = {
   name: planName
   location: location
-  sku: { name: 'FC1', tier: 'FlexConsumption' }
+  sku: { name: 'Y1', tier: 'Dynamic' }
+  kind: 'functionapp'
   properties: { reserved: true }
 }
 
@@ -112,10 +113,13 @@ resource func 'Microsoft.Web/sites@2024-04-01' = {
   properties: {
     serverFarmId: plan.id
     httpsOnly: true
+    reserved: true
     siteConfig: {
+      linuxFxVersion: 'PYTHON|3.11'
       appSettings: [
-        { name: 'AzureWebJobsStorage__accountName', value: storage.name }
+        { name: 'AzureWebJobsStorage', value: 'DefaultEndpointsProtocol=https;AccountName=${storage.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storage.listKeys().keys[0].value}' }
         { name: 'FUNCTIONS_WORKER_RUNTIME',        value: 'python' }
+        { name: 'FUNCTIONS_EXTENSION_VERSION',     value: '~4' }
         { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: ai.properties.ConnectionString }
         { name: 'ACU_ENDPOINT', value: 'https://${acu.properties.customSubDomainName}.cognitiveservices.azure.com' }
         { name: 'INPUT_CONTAINER',      value: 'input' }
@@ -150,7 +154,7 @@ resource fhir 'Microsoft.HealthcareApis/workspaces/fhirservices@2024-03-31' = {
   identity: { type: 'SystemAssigned' }
   properties: {
     authenticationConfiguration: {
-      authority: environment().authentication.loginEndpoint + subscription().tenantId
+      authority: '${environment().authentication.loginEndpoint}${subscription().tenantId}'
       audience: 'https://${ahdsWs}-${fhirName}.fhir.azurehealthcareapis.com'
       smartProxyEnabled: false
     }
